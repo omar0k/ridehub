@@ -1,0 +1,3 @@
+.pac-item:hover {
+  @apply bg-slate-300;
+}
