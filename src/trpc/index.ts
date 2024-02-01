@@ -1,6 +1,6 @@
 // API
 import { db } from "@/db";
-import { publicProcedure, router } from "./trpc";
+import { privateProcedure, publicProcedure, router } from "./trpc";
 import { tripInfoInput } from "@/types";
 import type { Vehicle } from "@prisma/client";
 export const appRouter = router({
@@ -14,21 +14,34 @@ export const appRouter = router({
   createTrip: publicProcedure
     .input(tripInfoInput)
     .mutation(async ({ ctx, input }) => {
-      const trip = await db.trip.create({
-        data: {
-          destination: "Dummy Destination",
-          origin: "Dummy Origin",
-          status: "CANCELLED", // Assuming "Scheduled" is a valid status enum value
-          startTime: new Date().toISOString(), // Current time
-          endTime: new Date().toISOString(), // Current time
-          scheduledAt: new Date().toISOString(), // Current time
-          rating: 5, // A dummy rating value
-          price: 49.99, // A dummy price value
-          vehicleId: 1, // Assuming 1 is a valid vehicle ID
-          userId: "dummyUser123", // Assuming "dummyUser123" is a
-        },
-      });
+      try {
+        const trip = await db.trip.create({
+          data: {
+            destination: input.destination,
+            origin: input.origin,
+            status: input.status,
+            scheduleDate: input.scheduleDate,
+            price: input.price,
+            distance: input.distance,
+            duration: input.duration,
+            vehicle: {
+              connect: {
+                id: 1,
+              },
+            },
+            scheduleTime: input.scheduleTime,
+          },
+        });
+        return trip;
+      } catch (error) {
+        console.error("Error creating trip:", error);
+
+        throw error;
+      }
     }),
+  getTrips: privateProcedure.query(async ({ ctx }) => {
+    
+  }),
 });
 
 export type AppRouter = typeof appRouter;

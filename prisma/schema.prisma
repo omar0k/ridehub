@@ -16,7 +16,7 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  TArip     Trip[]
+  // Trip     Trip[]
 }
 
 model Vehicle {
@@ -31,22 +31,22 @@ model Vehicle {
 }
 
 model Trip {
-  id          Int       @id @unique @default(autoincrement())
-  origin      String
-  destination String
-  status      Status
-  startTime   DateTime? @default(now())
-  endTime     DateTime? @updatedAt
-  scheduledAt DateTime?
-  rating      Int?      @default(1)
-  price       Float?
-  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
-  passenger   User      @relation(fields: [userId], references: [id])
-  userId      String
-  vehicleId   Int
+  id           Int       @id @unique @default(autoincrement())
+  origin       String
+  destination  String
+  status       Status?
+  scheduleDate DateTime?
+  scheduleTime String?
+  price        Float?
+  distance     Float?
+  duration     Int?
+  vehicle      Vehicle   @relation(fields: [vehicleId], references: [id])
+  // passenger   User      @relation(fields: [userId], references: [id])
+  // userId      String
+  vehicleId    Int
+  // @@index([userId], name: "idx_userId")
 
   @@index([vehicleId], name: "idx_vehicleId")
-  @@index([userId], name: "idx_userId")
 }
 
 enum Status {

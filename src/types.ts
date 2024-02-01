@@ -10,12 +10,11 @@ export const tripInfoInput = z.object({
     .string({ required_error: "Enter destination location" })
     .min(1),
   status: z.nativeEnum(Status).optional(),
-  startTime: z.date().optional(),
-  endTime: z.date().optional(),
-  scheduledAt: z.date().optional(),
-  rating: z.number().min(1).max(5).optional(),
+  scheduleDate: z.string().optional(),
+  scheduleTime: z.string().optional(),
   price: z.number().min(1).optional(),
-  userId: z.string().optional(),
+  duration: z.number(),
+  distance: z.number(),
   vehicleId: z.number().optional(),
 });
 
