@@ -1,3 +1,7 @@
 .pac-item:hover {
   @apply bg-slate-300;
 }
+.pac-container:after {
+  background-image: none !important;
+  height: 0px;
+}

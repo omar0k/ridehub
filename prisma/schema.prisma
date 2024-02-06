@@ -31,16 +31,16 @@ model Vehicle {
 }
 
 model Trip {
-  id           Int       @id @unique @default(autoincrement())
+  id           Int     @id @unique @default(autoincrement())
   origin       String
   destination  String
   status       Status?
-  scheduleDate DateTime?
+  scheduleDate String?
   scheduleTime String?
   price        Float?
   distance     Float?
   duration     Int?
-  vehicle      Vehicle   @relation(fields: [vehicleId], references: [id])
+  vehicle      Vehicle @relation(fields: [vehicleId], references: [id])
   // passenger   User      @relation(fields: [userId], references: [id])
   // userId      String
   vehicleId    Int
