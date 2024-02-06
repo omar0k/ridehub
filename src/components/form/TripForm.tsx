@@ -120,8 +120,8 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
   console.log(currentStepIndex);
   return (
     <Form {...form}>
-      <form className="w-[50%]" onSubmit={form.handleSubmit(handleSubmit)}>
-        <Card>
+      <form className="w-[50%] " onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="">
           <CardHeader className="flex">
             <CardTitle className="flex items-center gap-2">
               {!isFirstStep && (
