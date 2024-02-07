@@ -1,10 +1,11 @@
 import { trpc } from "@/app/_trpc/client";
-import { CarIcon, Divide } from "lucide-react";
+import { CarIcon, Divide, Luggage, User } from "lucide-react";
 import { FormField } from "../ui/form";
 import { UseFormReturn } from "react-hook-form";
 import { FormInfoData } from "@/types";
 import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
+import { PersonIcon } from "@radix-ui/react-icons";
 
 interface VehicleSelectionFormProps {
   form: UseFormReturn<FormInfoData>;
@@ -22,11 +23,11 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
         name="vehicleId"
         render={({ field }) => {
           return (
-            <div className="max-h-[400px] overflow-y-auto py-5">
-              <div className="grid grid-cols-3 gap-5">
+            <div className="max-h-[50dvh] overflow-y-auto py-5">
+              <div className="grid grid-cols-2 gap-5 p-5 md:grid-cols-3">
                 {vehicles?.map((vehicle) => (
                   <Card
-                    className={`cursor-pointer  ${form.getValues().vehicleId === vehicle.id ? "border-4  border-black" : ""}`}
+                    className={`cursor-pointer border-4  ${form.getValues().vehicleId === vehicle.id ? "  border-black" : ""}`}
                     key={vehicle.id}
                     onClick={() => {
                       form.setValue("vehicleId", vehicle.id);
@@ -41,12 +42,17 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
                         width={150}
                         height={150}
                       />
-                      <div className="flex-col ">
+                      <div className="flex-col">
                         <p className="font-semibold capitalize">
                           {vehicle.name}
                         </p>
-                        <p>Seats: {vehicle.seats}</p>
-                        <p>Luggage: {vehicle.luggage}</p>
+                        <div className="flex gap-1">
+                          <User /> {vehicle.seats}
+                        </div>
+                        <div className="flex gap-1">
+                          <Luggage />
+                          {vehicle.luggage}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

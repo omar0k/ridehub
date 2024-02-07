@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { privateProcedure, publicProcedure, router } from "./trpc";
 import { tripInfoInput } from "@/types";
 import type { Vehicle } from "@prisma/client";
+import { stripe } from "@/config/stripe";
+import { absoluteUrl } from "@/lib/utils";
 export const appRouter = router({
   test: publicProcedure.query(() => {
     return "hello trpc";
@@ -39,8 +41,28 @@ export const appRouter = router({
         throw error;
       }
     }),
-  getTrips: privateProcedure.query(async ({ ctx }) => {
-    
+  getTrips: privateProcedure.query(async ({ ctx }) => {}),
+  createStripeSession: publicProcedure.mutation(async () => {
+    const billingUrl = absoluteUrl("/dashboard/billing");
+    const stripeSession = await stripe.checkout.sessions.create({
+      success_url: billingUrl,
+      cancel_url: billingUrl,
+      payment_method_types: ["card"],
+      mode: "payment",
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price_data: {
+            currency: "USD",
+            unit_amount: 4200,
+            product: "prod_PW5sxIbW33VAhP",
+          },
+          quantity: 1,
+        },
+      ],
+    });
+
+    return { url: stripeSession.url };
   }),
 });
 

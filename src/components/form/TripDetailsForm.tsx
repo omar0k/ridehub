@@ -40,8 +40,8 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
                     {...field}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onPlaceSelected={(place) => {
-                      if (place.formatted_address) {
-                        form.setValue("origin", place.formatted_address);
+                      if (place?.formatted_address) {
+                        form.setValue("origin", place?.formatted_address);
                       }
                     }}
                     options={{

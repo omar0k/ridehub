@@ -19,6 +19,7 @@ import { useMultistepForm } from "@/app/hooks/useMutlistepForm";
 import TripDetailsForm from "./TripDetailsForm";
 import VehicleSelectionForm from "./VehicleSelectionForm";
 import { ArrowLeft } from "lucide-react";
+import PaymentForm from "./PaymentForm";
 
 export const formSchema = z.object({
   origin: z
@@ -42,7 +43,7 @@ interface TripFormProps {
     React.SetStateAction<google.maps.DirectionsResult | null>
   >;
 }
-const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
+const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
   const [distance, setDistance] = useState<string>();
   const [duration, setDuration] = useState<string>();
   const [directionsError, setDirectionsError] = useState<boolean>(false);
@@ -74,6 +75,13 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
     />,
     <VehicleSelectionForm form={form} />,
   ]);
+  const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
+    onSuccess: ({ url }) => {
+      if (url) {
+        window.location.href = url;
+      }
+    },
+  });
   const { mutate: createTrip } = trpc.createTrip.useMutation();
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
@@ -104,6 +112,7 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
           scheduleTime: fields.tripTime,
           vehicleId: 1,
         });
+        createStripeSession()
         return toast({
           title: "Trip booked successfully",
         });
@@ -120,7 +129,10 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
   console.log(currentStepIndex);
   return (
     <Form {...form}>
-      <form className="w-[50%] " onSubmit={form.handleSubmit(handleSubmit)}>
+      <form
+        className="w-full md:w-[50%]  "
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
         <Card className="">
           <CardHeader className="flex">
             <CardTitle className="flex items-center gap-2">
@@ -138,7 +150,7 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
           <CardContent>{formStep}</CardContent>
           <CardFooter className="justify-center">
             <Button className="w-1/2" type="submit">
-              {isLastStep ? "Finish" : "Next"}
+              {isLastStep ? "Checkout" : "Next"}
             </Button>
           </CardFooter>
         </Card>
@@ -146,4 +158,4 @@ const SecondTripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
     </Form>
   );
 };
-export default SecondTripForm;
+export default TripForm;

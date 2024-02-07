@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,12 @@ export default function RootLayout({
     <Providers>
       <ClerkProvider>
         <html lang="en">
-          <body className={inter.className}>
+          <body
+            className={cn(
+              "min-h-screen font-sans antialiased",
+              inter.className,
+            )}
+          >
             <main>{children}</main>
             <Toaster />
           </body>
