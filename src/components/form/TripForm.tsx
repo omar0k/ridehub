@@ -86,12 +86,17 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
     isLastStep,
   } = useMultistepForm([
     <TripDetailsForm
+      key={"tripDetails"}
       name="Trip Details"
       form={form}
       directionsError={directionsError}
       setDirectionsError={setDirectionsError}
     />,
-    <VehicleSelectionForm name="Select Vehicle" form={form} />,
+    <VehicleSelectionForm
+      key={"vehicleSelection"}
+      name="Select Vehicle"
+      form={form}
+    />,
   ]);
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url }) => {
@@ -171,12 +176,13 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
           <CardContent>
             <Accordion
               type="single"
+              key={currentStepIndex}
               value={`item-${currentStepIndex}`}
               collapsible
             >
               {steps.map((step, idx) => {
                 return (
-                  <AccordionItem value={`item-${idx}`}>
+                  <AccordionItem key={step.key} value={`item-${idx}`}>
                     <div>
                       <AccordionTrigger className="mb-3 cursor-default flex-col rounded-md bg-primary px-5 font-semibold text-white hover:no-underline">
                         <div className="flex w-full justify-between">
