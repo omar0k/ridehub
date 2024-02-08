@@ -9,3 +9,6 @@ export function absoluteUrl(path: string) {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}${path}`;
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
+export function calculatePrice(distance: number, duration: number) {
+  return distance * duration;
+}

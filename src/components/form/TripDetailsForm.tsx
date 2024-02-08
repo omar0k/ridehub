@@ -14,18 +14,20 @@ interface TripDetailsFormProps {
   form: UseFormReturn<FormInfoData>;
   setDirectionsError: React.Dispatch<React.SetStateAction<boolean>>;
   directionsError: boolean;
+  name: string;
 }
 
 const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   form,
   setDirectionsError,
   directionsError,
+  name,
 }) => {
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() - 1);
   const currentDateString = currentDate.toISOString().split("T")[0];
   return (
-    <div>
+    <div className="px-1">
       <FormField
         control={form.control}
         name="origin"
@@ -34,7 +36,7 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
             <div>
               <FormItem>
                 <FormLabel>Pick Up</FormLabel>
-                <FormControl>
+                <FormControl className="">
                   <Autocomplete
                     className={`custom-input ${directionsError ? "!border-2 !border-red-500" : ""}`}
                     {...field}

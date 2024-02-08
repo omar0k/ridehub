@@ -21,7 +21,7 @@ export const useIsMobile = () => {
     return () => {
       window.removeEventListener("resize", handleWindowSizeChange);
     };
-  }, []);
+  }, [window]);
 
   return windowSize;
 };

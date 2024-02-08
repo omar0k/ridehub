@@ -11,15 +11,32 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Status } from "@prisma/client";
 import { trpc } from "@/app/_trpc/client";
 import { useToast } from "../ui/use-toast";
 import { useMultistepForm } from "@/app/hooks/useMutlistepForm";
 import TripDetailsForm from "./TripDetailsForm";
 import VehicleSelectionForm from "./VehicleSelectionForm";
-import { ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CheckCircleIcon,
+  Circle,
+  CircleDot,
+  Edit,
+  Pencil,
+  SquareDot,
+} from "lucide-react";
 import PaymentForm from "./PaymentForm";
+import { calculatePrice } from "@/lib/utils";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import { format } from "path";
 
 export const formSchema = z.object({
   origin: z
@@ -36,7 +53,7 @@ export const formSchema = z.object({
     { message: "Please enter a valid date" },
   ),
   tripTime: z.string().min(1, { message: "Please enter a trip time" }),
-  vehicleId: z.number(),
+  vehicleId: z.number().min(1, { message: "Please select a vehicle" }),
 });
 interface TripFormProps {
   setDirectionsResponse: React.Dispatch<
@@ -55,7 +72,7 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
       destination: "",
       tripDate: "",
       tripTime: "",
-      vehicleId: 0,
+      vehicleId: 1,
     },
   });
   const {
@@ -69,11 +86,12 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
     isLastStep,
   } = useMultistepForm([
     <TripDetailsForm
+      name="Trip Details"
       form={form}
       directionsError={directionsError}
       setDirectionsError={setDirectionsError}
     />,
-    <VehicleSelectionForm form={form} />,
+    <VehicleSelectionForm name="Select Vehicle" form={form} />,
   ]);
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url }) => {
@@ -85,6 +103,7 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
   const { mutate: createTrip } = trpc.createTrip.useMutation();
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
+    console.log("rr");
     const directionService = new google.maps.DirectionsService();
     try {
       const results = await directionService.route({
@@ -99,20 +118,22 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
 
       if (!isLastStep) return next();
       if (distance && duration) {
+        const price = calculatePrice(
+          parseFloat(distance?.replace(/[^\d.]/g, "")),
+          parseInt(duration?.replace(/[^\d.]/g, "")),
+        );
         createTrip({
           origin: fields.origin,
           destination: fields.destination,
           status: Status.BOOKED,
           distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
           duration: parseInt(duration?.replace(/[^\d.]/g, "")),
-          price:
-            parseFloat(distance?.replace(/[^\d.]/g, "")) +
-            parseInt(duration?.replace(/[^\d.]/g, "")),
+          price: price,
           scheduleDate: fields.tripDate,
           scheduleTime: fields.tripTime,
-          vehicleId: 1,
+          vehicleId: fields.vehicleId,
         });
-        createStripeSession()
+        createStripeSession({ price: price });
         return toast({
           title: "Trip booked successfully",
         });
@@ -126,7 +147,7 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
       });
     }
   };
-  console.log(currentStepIndex);
+
   return (
     <Form {...form}>
       <form
@@ -144,10 +165,63 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
                   onClick={back}
                 />
               )}
-              Book a trip
+              Book a trip {currentStepIndex + 1}
             </CardTitle>
           </CardHeader>
-          <CardContent>{formStep}</CardContent>
+          <CardContent>
+            <Accordion
+              type="single"
+              value={`item-${currentStepIndex}`}
+              collapsible
+            >
+              {steps.map((step, idx) => {
+                return (
+                  <AccordionItem value={`item-${idx}`}>
+                    <div>
+                      <AccordionTrigger className="mb-3 cursor-default flex-col rounded-md bg-primary px-5 font-semibold text-white hover:no-underline">
+                        <div className="flex w-full justify-between">
+                          <div>
+                            Step {idx + 1}: {step.props.name}
+                          </div>
+                          {currentStepIndex !== idx ? (
+                            <div
+                              className="m-0 flex cursor-pointer items-center gap-1  hover:opacity-70"
+                              onClick={() => goTo(idx)}
+                            >
+                              <Pencil width={15} height={15} />
+                              Edit
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="flex w-full items-start justify-start">
+                          {idx === 0 &&
+                          currentStepIndex !== idx &&
+                          form.getValues().origin ? (
+                            <div className="flex-col">
+                              <div className="flex items-center gap-1">
+                                <CalendarDays />
+                                {form.getValues().tripDate},{" "}
+                                {form.getValues().tripTime}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <CircleDot width={20} />
+                                {form.getValues().origin}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <SquareDot width={20} />
+                                {form.getValues().destination}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </AccordionTrigger>
+                    </div>
+                    <AccordionContent>{step}</AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+          </CardContent>
           <CardFooter className="justify-center">
             <Button className="w-1/2" type="submit">
               {isLastStep ? "Checkout" : "Next"}

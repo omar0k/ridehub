@@ -5,6 +5,8 @@ import Providers from "@/components/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import "react-loading-skeleton/dist/skeleton.css";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
