@@ -17,7 +17,6 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
   form,
 }) => {
   const { data: vehicles, isLoading } = trpc.getVehicles.useQuery();
-  console.log(vehicles);
   return (
     <>
       <h2 className="mb-1 text-center font-semibold">Select a vehicle</h2>
