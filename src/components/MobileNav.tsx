@@ -68,7 +68,7 @@ const MobileNav = () => {
                 </li>
                 <li className="my-3 h-px w-full bg-gray-300" />
                 <li className="font-semibold">
-                  <SignOutButton >Sign out</SignOutButton>
+                  <SignOutButton>Sign out</SignOutButton>
                 </li>
               </>
             </SignedIn>
