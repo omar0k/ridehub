@@ -165,7 +165,7 @@ const TripForm: React.FC<TripFormProps> = ({
         <Card className="">
           <CardHeader className="flex">
             <CardTitle className="flex items-center gap-2">
-              Book a trip {currentStepIndex}
+              Book a trip 
             </CardTitle>
           </CardHeader>
           <CardContent>
