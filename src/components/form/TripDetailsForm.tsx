@@ -28,17 +28,18 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   const currentDateString = currentDate.toISOString().split("T")[0];
 
   return (
-    <div className="px-1 ">
+    <div className="flex  flex-col gap-2 px-1 ">
       <FormField
         control={form.control}
         name="origin"
         render={({ field }) => {
           return (
             <div className="">
-              <FormItem >
+              <FormItem>
                 <FormLabel>Pick Up</FormLabel>
-                <FormControl className="mb-3">
+                <FormControl>
                   <Autocomplete
+                    autoFocus
                     className={`custom-input ${directionsError ? "!border-2 !border-red-500" : ""}`}
                     {...field}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}

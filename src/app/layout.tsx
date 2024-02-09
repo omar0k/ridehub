@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import "react-loading-skeleton/dist/skeleton.css";
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,17 +22,17 @@ export default function RootLayout({
   return (
     <Providers>
       <ClerkProvider>
-        <html lang="en">
-          <body
-            className={cn(
-              "min-h-screen font-sans antialiased",
-              inter.className,
-            )}
-          >
-            <main>{children}</main>
-            <Toaster />
-          </body>
-        </html>
+          <html lang="en">
+            <body
+              className={cn(
+                "min-h-screen font-sans antialiased",
+                inter.className,
+              )}
+            >
+              <main>{children}</main>
+              <Toaster />
+            </body>
+          </html>
       </ClerkProvider>
     </Providers>
   );

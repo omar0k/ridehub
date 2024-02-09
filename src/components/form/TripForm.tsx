@@ -104,7 +104,6 @@ const TripForm: React.FC<TripFormProps> = ({
       }
     },
   });
-  const { mutate: createTrip } = trpc.createTrip.useMutation();
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
     console.log(directionsResponse);
@@ -128,18 +127,35 @@ const TripForm: React.FC<TripFormProps> = ({
           parseFloat(distance?.replace(/[^\d.]/g, "")),
           parseInt(duration?.replace(/[^\d.]/g, "")),
         );
-        createTrip({
-          origin: fields.origin,
-          destination: fields.destination,
-          status: Status.BOOKED,
-          distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
-          duration: parseInt(duration?.replace(/[^\d.]/g, "")),
-          price: price,
-          scheduleDate: fields.tripDate,
-          scheduleTime: fields.tripTime,
-          vehicleId: fields.vehicleId,
-        });
         createStripeSession({ price: price });
+
+        const response = await fetch("/api/webhooks/stripe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            trip: {
+              origin: fields.origin,
+              destination: fields.destination,
+              status: Status.BOOKED,
+              distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
+              duration: parseInt(duration?.replace(/[^\d.]/g, "")),
+              price: price,
+              scheduleDate: fields.tripDate,
+              scheduleTime: fields.tripTime,
+              vehicleId: fields.vehicleId,
+            },
+          }),
+        });
+
+        if (response.ok) {
+          // Webhook triggered successfully
+          console.log("Webhook triggered successfully");
+        } else {
+          // Handle error if webhook triggering fails
+          console.error("Failed to trigger webhook:", response.statusText);
+        }
         return toast({
           title: "Trip booked successfully",
           description: "Redirecting to payment...",
@@ -165,7 +181,7 @@ const TripForm: React.FC<TripFormProps> = ({
         <Card className="">
           <CardHeader className="flex">
             <CardTitle className="flex items-center gap-2">
-              Book a trip 
+              Book a trip
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -236,7 +252,7 @@ const TripForm: React.FC<TripFormProps> = ({
             <Button className="w-1/2" type="submit">
               {isLastStep ? (
                 <div className="flex items-center gap-2 ">
-                  Checkout <ArrowRight width={20}/>
+                  Checkout <ArrowRight width={20} />
                 </div>
               ) : (
                 "Next"

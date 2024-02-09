@@ -47,7 +47,6 @@ export const appRouter = router({
     .input(z.object({ price: z.number() }))
     .mutation(async (opts) => {
       const billingUrl = absoluteUrl("/dashboard/billing");
-      console.log(opts.input.price);
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: billingUrl,
         cancel_url: billingUrl,
