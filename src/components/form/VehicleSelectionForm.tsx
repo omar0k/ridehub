@@ -24,7 +24,7 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
     if (data) {
       setVehicles(data);
     }
-  }, [data]);
+  }, [data,isLoading]);
 
   return (
     <>
