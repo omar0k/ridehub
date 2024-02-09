@@ -26,24 +26,25 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() - 1);
   const currentDateString = currentDate.toISOString().split("T")[0];
+
   return (
-    <div className="px-1">
+    <div className="px-1 ">
       <FormField
         control={form.control}
         name="origin"
         render={({ field }) => {
           return (
-            <div>
-              <FormItem>
+            <div className="">
+              <FormItem >
                 <FormLabel>Pick Up</FormLabel>
-                <FormControl className="">
+                <FormControl className="mb-3">
                   <Autocomplete
                     className={`custom-input ${directionsError ? "!border-2 !border-red-500" : ""}`}
                     {...field}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onPlaceSelected={(place) => {
-                      if (place?.formatted_address) {
-                        form.setValue("origin", place?.formatted_address);
+                      if (place.formatted_address) {
+                        form.setValue("origin", place.formatted_address);
                       }
                     }}
                     options={{
@@ -68,8 +69,8 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
                 <FormLabel>Drop Off</FormLabel>
                 <FormControl>
                   <Autocomplete
-                    className={`custom-input ${directionsError ? "!border-2 !border-red-500" : ""}`}
                     {...field}
+                    className={`custom-input ${directionsError ? "!border-2 !border-red-500" : ""}`}
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onPlaceSelected={(place) => {
                       if (place.formatted_address) {

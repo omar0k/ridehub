@@ -1,9 +1,9 @@
-import { TypeOf, z } from "zod";
-import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import { isValid } from "date-fns";
+import { format, isValid } from "date-fns";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { Status } from "@prisma/client";
 import { trpc } from "@/app/_trpc/client";
 import { useToast } from "../ui/use-toast";
@@ -19,16 +19,12 @@ import { useMultistepForm } from "@/app/hooks/useMutlistepForm";
 import TripDetailsForm from "./TripDetailsForm";
 import VehicleSelectionForm from "./VehicleSelectionForm";
 import {
-  ArrowLeft,
+  ArrowRight,
   CalendarDays,
-  CheckCircleIcon,
-  Circle,
   CircleDot,
-  Edit,
   Pencil,
   SquareDot,
 } from "lucide-react";
-import PaymentForm from "./PaymentForm";
 import { calculatePrice } from "@/lib/utils";
 import {
   Accordion,
@@ -36,7 +32,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { format } from "path";
 
 export const formSchema = z.object({
   origin: z
@@ -59,8 +54,12 @@ interface TripFormProps {
   setDirectionsResponse: React.Dispatch<
     React.SetStateAction<google.maps.DirectionsResult | null>
   >;
+  directionsResponse: google.maps.DirectionsResult | null;
 }
-const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
+const TripForm: React.FC<TripFormProps> = ({
+  directionsResponse,
+  setDirectionsResponse,
+}) => {
   const [distance, setDistance] = useState<string>();
   const [duration, setDuration] = useState<string>();
   const [directionsError, setDirectionsError] = useState<boolean>(false);
@@ -108,18 +107,20 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
   const { mutate: createTrip } = trpc.createTrip.useMutation();
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
-    console.log("rr");
-    const directionService = new google.maps.DirectionsService();
+    console.log(directionsResponse);
     try {
-      const results = await directionService.route({
-        origin: fields.origin,
-        destination: fields.destination,
-        travelMode: google.maps.TravelMode.DRIVING,
-      });
-      setDirectionsResponse(results);
-      setDistance(results.routes[0].legs[0].distance?.text);
-      setDuration(results.routes[0].legs[0].duration?.text);
-      setDirectionsError(false);
+      if (!directionsResponse) {
+        const directionService = new google.maps.DirectionsService();
+        const results = await directionService.route({
+          origin: fields.origin,
+          destination: fields.destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+        });
+        setDirectionsResponse(results);
+        setDistance(results.routes[0].legs[0].distance?.text);
+        setDuration(results.routes[0].legs[0].duration?.text);
+        setDirectionsError(false);
+      }
 
       if (!isLastStep) return next();
       if (distance && duration) {
@@ -141,13 +142,15 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
         createStripeSession({ price: price });
         return toast({
           title: "Trip booked successfully",
+          description: "Redirecting to payment...",
         });
       }
     } catch (error) {
       setDirectionsError(true);
       return toast({
-        title: "Error trying to get directions",
-        description: "Make sure to select locations from dropdown list",
+        title: "Address not found",
+        description: "Select locations from dropdown list",
+
         variant: "destructive",
       });
     }
@@ -162,15 +165,7 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
         <Card className="">
           <CardHeader className="flex">
             <CardTitle className="flex items-center gap-2">
-              {!isFirstStep && (
-                <ArrowLeft
-                  width={25}
-                  height={25}
-                  className="transition-transform duration-150 hover:-translate-x-1"
-                  onClick={back}
-                />
-              )}
-              Book a trip {currentStepIndex + 1}
+              Book a trip {currentStepIndex}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -189,7 +184,11 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
                           <div>
                             Step {idx + 1}: {step.props.name}
                           </div>
-                          {currentStepIndex !== idx ? (
+                          {currentStepIndex !== idx &&
+                          form.getValues().origin &&
+                          form.getValues().destination &&
+                          form.getValues().tripDate &&
+                          form.getValues().tripTime ? (
                             <div
                               className="m-0 flex cursor-pointer items-center gap-1  hover:opacity-70"
                               onClick={() => goTo(idx)}
@@ -205,9 +204,14 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
                           form.getValues().origin ? (
                             <div className="flex-col">
                               <div className="flex items-center gap-1">
-                                <CalendarDays />
+                                <CalendarDays width={20} />
                                 {form.getValues().tripDate},{" "}
-                                {form.getValues().tripTime}
+                                {format(
+                                  new Date(
+                                    `2000-01-01T${form.getValues().tripTime}`,
+                                  ),
+                                  "h:mm a",
+                                )}
                               </div>
                               <div className="flex items-center gap-1">
                                 <CircleDot width={20} />
@@ -230,7 +234,13 @@ const TripForm: React.FC<TripFormProps> = ({ setDirectionsResponse }) => {
           </CardContent>
           <CardFooter className="justify-center">
             <Button className="w-1/2" type="submit">
-              {isLastStep ? "Checkout" : "Next"}
+              {isLastStep ? (
+                <div className="flex items-center gap-2 ">
+                  Checkout <ArrowRight width={20}/>
+                </div>
+              ) : (
+                "Next"
+              )}
             </Button>
           </CardFooter>
         </Card>

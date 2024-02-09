@@ -1,16 +1,14 @@
 "use client";
-import "./Map.css";
 import {
+  DirectionsRenderer,
   GoogleMap,
   useJsApiLoader,
-  DirectionsRenderer,
 } from "@react-google-maps/api";
 import React, { useMemo, useState } from "react";
+import "./Map.css";
 
-import TripForm from "./form/TripForm";
-import VehicleList from "./VehicleList";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { Card, CardContent } from "./ui/card";
+import TripForm from "./form/TripForm";
 
 type Location = {
   lat: number;
@@ -38,25 +36,28 @@ const Map = () => {
   });
 
   return isLoaded ? (
-    <div className="mt-10 flex items-center justify-center gap-5 md:flex-row flex-col-reverse md:justify-between md:gap-0">
-      <TripForm setDirectionsResponse={setDirectionsResponse} />
+    <div className="mt-10 flex flex-col-reverse items-center justify-center gap-5 md:flex-row md:justify-between md:gap-0">
+      <TripForm
+        setDirectionsResponse={setDirectionsResponse}
+        directionsResponse={directionsResponse}
+      />
       <div className="flex items-center justify-center">
-          <GoogleMap
-            onLoad={(map) => setMap(map)}
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={8}
-            options={{
-              zoomControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-              streetViewControl: false,
-            }}
-          >
-            {directionsResponse && (
-              <DirectionsRenderer directions={directionsResponse} />
-            )}
-          </GoogleMap>
+        <GoogleMap
+          onLoad={(map) => setMap(map)}
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={8}
+          options={{
+            zoomControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+            streetViewControl: false,
+          }}
+        >
+          {directionsResponse && (
+            <DirectionsRenderer directions={directionsResponse} />
+          )}
+        </GoogleMap>
       </div>
     </div>
   ) : (

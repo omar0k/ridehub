@@ -7,6 +7,8 @@ import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
 import { PersonIcon } from "@radix-ui/react-icons";
 import Skeleton from "react-loading-skeleton";
+import { useEffect, useState } from "react";
+import { Vehicle } from "@prisma/client";
 
 interface VehicleSelectionFormProps {
   form: UseFormReturn<FormInfoData>;
@@ -16,7 +18,14 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
   name,
   form,
 }) => {
-  const { data: vehicles, isLoading } = trpc.getVehicles.useQuery();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { data, isLoading } = trpc.getVehicles.useQuery();
+  useEffect(() => {
+    if (data) {
+      setVehicles(data);
+    }
+  }, [data]);
+
   return (
     <>
       <h2 className="mb-1 text-center font-semibold">Select a vehicle</h2>
@@ -25,8 +34,8 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
         name="vehicleId"
         render={({ field }) => {
           return (
-            <div className="max-h-[50dvh] overflow-y-auto py-5">
-              <div className="grid grid-cols-2 gap-5 p-5 md:grid-cols-3">
+            <div className="max-h-[40dvh] overflow-y-auto py-5">
+              <div className="grid grid-cols-2 gap-5 p-5 pb-0 md:grid-cols-3">
                 {isLoading ? (
                   <Skeleton height={40} count={4} />
                 ) : (
