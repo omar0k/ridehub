@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [{ hostname: "utfs.io" }, { hostname: "img.clerk.com" }],
   },
+  
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.resolve.alias.canvas = false;
     config.resolve.alias.encoding = false;

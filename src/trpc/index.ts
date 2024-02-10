@@ -44,7 +44,7 @@ export const appRouter = router({
     }),
   getTrips: privateProcedure.query(async () => {}),
   createStripeSession: publicProcedure
-    .input(z.object({ price: z.number() }))
+    .input(tripInfoInput)
     .mutation(async (opts) => {
       const billingUrl = absoluteUrl("/dashboard/billing");
       const stripeSession = await stripe.checkout.sessions.create({
@@ -57,12 +57,17 @@ export const appRouter = router({
           {
             price_data: {
               currency: "USD",
-              unit_amount: opts.input.price * 100,
+              unit_amount: Math.round(
+                opts.input.price ? opts.input.price * 100 : 1,
+              ),
               product: "prod_PW5sxIbW33VAhP",
             },
             quantity: 1,
           },
         ],
+        metadata: {
+          ...opts.input,
+        },
       });
       return { url: stripeSession.url, price: opts.input.price };
     }),

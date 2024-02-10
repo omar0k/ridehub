@@ -127,35 +127,17 @@ const TripForm: React.FC<TripFormProps> = ({
           parseFloat(distance?.replace(/[^\d.]/g, "")),
           parseInt(duration?.replace(/[^\d.]/g, "")),
         );
-        createStripeSession({ price: price });
-
-        const response = await fetch("/api/webhooks/stripe", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            trip: {
-              origin: fields.origin,
-              destination: fields.destination,
-              status: Status.BOOKED,
-              distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
-              duration: parseInt(duration?.replace(/[^\d.]/g, "")),
-              price: price,
-              scheduleDate: fields.tripDate,
-              scheduleTime: fields.tripTime,
-              vehicleId: fields.vehicleId,
-            },
-          }),
+        createStripeSession({
+          origin: fields.origin,
+          destination: fields.destination,
+          status: Status.BOOKED,
+          distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
+          duration: parseInt(duration?.replace(/[^\d.]/g, "")),
+          price: price,
+          scheduleDate: fields.tripDate,
+          scheduleTime: fields.tripTime,
+          vehicleId: fields.vehicleId,
         });
-
-        if (response.ok) {
-          // Webhook triggered successfully
-          console.log("Webhook triggered successfully");
-        } else {
-          // Handle error if webhook triggering fails
-          console.error("Failed to trigger webhook:", response.statusText);
-        }
         return toast({
           title: "Trip booked successfully",
           description: "Redirecting to payment...",
