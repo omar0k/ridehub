@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   ) {
     if (trip) {
       try {
-        const createdTrip = await db.trip.create({
+        await db.trip.create({
           data: {
             origin: trip.origin,
             destination: trip.destination,
@@ -50,7 +50,6 @@ export async function POST(request: Request) {
             scheduleTime: trip.scheduleTime,
           },
         });
-        return createdTrip;
       } catch (error) {}
     }
   }
