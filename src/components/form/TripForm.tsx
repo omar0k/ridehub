@@ -51,12 +51,14 @@ export const formSchema = z.object({
   vehicleId: z.number().min(1, { message: "Please select a vehicle" }),
 });
 interface TripFormProps {
+  vehicleId: number | undefined;
   setDirectionsResponse: React.Dispatch<
     React.SetStateAction<google.maps.DirectionsResult | null>
   >;
   directionsResponse: google.maps.DirectionsResult | null;
 }
 const TripForm: React.FC<TripFormProps> = ({
+  vehicleId,
   directionsResponse,
   setDirectionsResponse,
 }) => {
@@ -71,7 +73,7 @@ const TripForm: React.FC<TripFormProps> = ({
       destination: "",
       tripDate: "",
       tripTime: "",
-      vehicleId: 1,
+      vehicleId: vehicleId ? vehicleId : 1,
     },
   });
   const {
@@ -94,6 +96,7 @@ const TripForm: React.FC<TripFormProps> = ({
     <VehicleSelectionForm
       key={"vehicleSelection"}
       name="Select Vehicle"
+      vehicleId={vehicleId}
       form={form}
     />,
   ]);
@@ -211,11 +214,11 @@ const TripForm: React.FC<TripFormProps> = ({
                                   "h:mm a",
                                 )}
                               </div>
-                              <div className="flex items-center gap-1">
+                              <div className="flex  items-center gap-1 text-start ">
                                 <CircleDot width={20} />
                                 {form.getValues().origin}
                               </div>
-                              <div className="flex items-center gap-1">
+                              <div className="flex  items-center gap-1 text-start">
                                 <SquareDot width={20} />
                                 {form.getValues().destination}
                               </div>

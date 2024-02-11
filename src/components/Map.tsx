@@ -14,7 +14,7 @@ type Location = {
   lat: number;
   lng: number;
 };
-const Map = () => {
+const Map = ({ vehicleId }: { vehicleId?: number }) => {
   const apiKey: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
   const { isMobile } = useIsMobile();
   const containerStyle = {
@@ -36,8 +36,9 @@ const Map = () => {
   });
 
   return isLoaded ? (
-    <div className="mt-10 flex flex-col-reverse items-center justify-center gap-5 md:flex-row md:justify-between md:gap-0">
+    <div className="mt-10 flex flex-col-reverse items-center justify-center gap-5 md:justify-between md:gap-0 lg:flex-row">
       <TripForm
+        vehicleId={vehicleId}
         setDirectionsResponse={setDirectionsResponse}
         directionsResponse={directionsResponse}
       />

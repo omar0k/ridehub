@@ -6,7 +6,6 @@ import Map from "@/components/Map";
 export default async function Home() {
   return (
     <MaxWidthWrapper className="">
-      <Navbar />
       <div>
         <Map />
       </div>

@@ -9,12 +9,15 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import Skeleton from "react-loading-skeleton";
 import { useEffect, useState } from "react";
 import { Vehicle } from "@prisma/client";
+import VehicleList from "../VehicleList";
 
 interface VehicleSelectionFormProps {
   form: UseFormReturn<FormInfoData>;
   name: string;
+  vehicleId?: number;
 }
 const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
+  vehicleId,
   name,
   form,
 }) => {
@@ -24,54 +27,23 @@ const VehicleSelectionForm: React.FC<VehicleSelectionFormProps> = ({
     if (data) {
       setVehicles(data);
     }
-  }, [data,isLoading]);
+  }, [data, isLoading]);
 
+  if (isLoading) {
+    return <Skeleton height={40} count={4} />;
+  }
   return (
     <>
-      <h2 className="mb-1 text-center font-semibold">Select a vehicle</h2>
+      <h2 className="mb-1 text-center text-xl font-semibold">
+        Select a vehicle
+      </h2>
       <FormField
         control={form.control}
         name="vehicleId"
         render={({ field }) => {
           return (
             <div className="max-h-[40dvh] overflow-y-auto py-5">
-              <div className="grid grid-cols-2 gap-5 p-5 pb-0 md:grid-cols-3">
-                {isLoading ? (
-                  <Skeleton height={40} count={4} />
-                ) : (
-                  vehicles?.map((vehicle) => (
-                    <Card
-                      className={`cursor-pointer border-4 ${form.getValues().vehicleId === vehicle.id ? "border-black" : ""}`}
-                      key={vehicle.id}
-                      onClick={() => {
-                        form.setValue("vehicleId", vehicle.id);
-                        console.log(form.getValues());
-                      }}
-                    >
-                      <CardContent>
-                        <Image
-                          className="mt-5"
-                          src={vehicle.image}
-                          alt="car-image"
-                          width={150}
-                          height={150}
-                        />
-                        <div className="flex-col">
-                          <p className="font-semibold capitalize">
-                            {vehicle.name}
-                          </p>
-                          <div className="flex gap-1">
-                            <User /> {vehicle.seats}
-                          </div>
-                          <div className="flex gap-1">
-                            <Luggage /> {vehicle.luggage}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
+              <VehicleList vehicleId={vehicleId} form={form} />
             </div>
           );
         }}

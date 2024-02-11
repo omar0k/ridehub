@@ -32,12 +32,12 @@ const Navbar = () => {
             <div className="hidden items-center sm:flex">
               <>
                 <Link
-                  href="/pricing"
+                  href="/fleet"
                   className={buttonVariants({
                     variant: "ghost",
                   })}
                 >
-                  Pricing
+                  Fleet
                 </Link>
                 <SignedOut>
                   <SignInButton>
