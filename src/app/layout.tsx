@@ -6,6 +6,7 @@ import { ClerkLoaded, ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import "react-loading-skeleton/dist/skeleton.css";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,17 +23,18 @@ export default function RootLayout({
   return (
     <Providers>
       <ClerkProvider>
-          <html lang="en">
-            <body
-              className={cn(
-                "min-h-screen font-sans antialiased",
-                inter.className,
-              )}
-            >
-              <main>{children}</main>
-              <Toaster />
-            </body>
-          </html>
+        <html lang="en">
+          <body
+            className={cn(
+              "min-h-screen font-sans antialiased",
+              inter.className,
+            )}
+          >
+            <Navbar />
+            <Toaster />
+            {children}
+          </body>
+        </html>
       </ClerkProvider>
     </Providers>
   );
