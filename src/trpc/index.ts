@@ -48,8 +48,8 @@ export const appRouter = router({
     .mutation(async (opts) => {
       const billingUrl = absoluteUrl("/dashboard/billing");
       const stripeSession = await stripe.checkout.sessions.create({
-        success_url: billingUrl,
-        cancel_url: billingUrl,
+        success_url: "https://car-service-blush.vercel.app/dashboard/billing",
+        cancel_url: "https://car-service-blush.vercel.app/dashboard/billing",
         payment_method_types: ["card"],
         mode: "payment",
         billing_address_collection: "auto",
