@@ -1,3 +1,4 @@
+"use client";
 import { trpc } from "@/app/_trpc/client";
 import { Vehicle } from "@prisma/client";
 import { User, Luggage } from "lucide-react";
