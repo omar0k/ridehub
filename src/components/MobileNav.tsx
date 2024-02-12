@@ -38,6 +38,15 @@ const MobileNav = () => {
       {isOpen ? (
         <div className="fixed inset-0 z-0 w-full animate-in fade-in-20 slide-in-from-top-5">
           <ul className="absolute grid w-full gap-3 border-b border-zinc-200 bg-white px-10 pb-8 pt-20 font-semibold shadow-xl">
+            <li>
+              <Link
+                className="flex w-full items-center font-semibold"
+                href="/fleet"
+                onClick={() => closeOnCurrent("/fleet")}
+              >
+                Fleet
+              </Link>
+            </li>
             <SignedOut>
               <>
                 <li className="w-full">
