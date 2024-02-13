@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   ) {
     if (trip) {
       try {
-        await db.trip.create({
+        const createdTrip = await db.trip.create({
           data: {
             origin: trip.origin,
             destination: trip.destination,
@@ -50,7 +50,10 @@ export async function POST(request: Request) {
             scheduleTime: trip.scheduleTime,
           },
         });
-      } catch (error) {}
+        return new Response(JSON.stringify(createdTrip), { status: 200 });
+      } catch (error) {
+        return new Response("Webhook error", { status: 400 });
+      }
     }
   }
   return new Response(null, { status: 200 });

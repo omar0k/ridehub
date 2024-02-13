@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
@@ -22,10 +22,12 @@ import {
   ArrowRight,
   CalendarDays,
   CircleDot,
+  Clock3,
   Pencil,
   SquareDot,
+  TrendingUp,
 } from "lucide-react";
-import { calculatePrice } from "@/lib/utils";
+import { TestTripValues, calculatePrice } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -68,13 +70,16 @@ const TripForm: React.FC<TripFormProps> = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      origin: "",
-      destination: "",
-      tripDate: "",
-      tripTime: "",
-      vehicleId: vehicleId ? vehicleId : 1,
-    },
+    defaultValues:
+      process.env.NEXT_PUBLIC_NODE_ENV !== "development"
+        ? TestTripValues
+        : {
+            origin: "",
+            destination: "",
+            tripDate: "",
+            tripTime: "",
+            vehicleId: vehicleId ? vehicleId : 1,
+          },
   });
   const {
     steps,
@@ -151,7 +156,6 @@ const TripForm: React.FC<TripFormProps> = ({
       return toast({
         title: "Address not found",
         description: "Select locations from dropdown list",
-
         variant: "destructive",
       });
     }
@@ -221,6 +225,14 @@ const TripForm: React.FC<TripFormProps> = ({
                               <div className="flex  items-center gap-1 text-start">
                                 <SquareDot width={20} />
                                 {form.getValues().destination}
+                              </div>
+                              <div className="flex items-center gap-1 text-start">
+                                <Clock3 width={20} />
+                                {duration}
+                              </div>
+                              <div className="flex items-center gap-1 text-start">
+                                <TrendingUp width={20} />
+                                {distance}
                               </div>
                             </div>
                           ) : null}
