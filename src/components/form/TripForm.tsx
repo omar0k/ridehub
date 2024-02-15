@@ -106,11 +106,11 @@ const TripForm: React.FC<TripFormProps> = ({
     />,
   ]);
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
-    onSuccess: ({ url, trip }) => {
-      console.log(trip);
-      // if (url) {
-      //   window.location.href = url;
-      // }
+    onSuccess: ({ url}) => {
+      // console.log(trip);
+      if (url) {
+        window.location.href = url;
+      }
     },
   });
   const { toast } = useToast();
