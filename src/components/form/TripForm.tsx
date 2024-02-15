@@ -71,7 +71,7 @@ const TripForm: React.FC<TripFormProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues:
-      process.env.NEXT_PUBLIC_NODE_ENV !== "development"
+      process.env.NEXT_PUBLIC_NODE_ENV === "development"
         ? TestTripValues
         : {
             origin: "",
@@ -106,15 +106,15 @@ const TripForm: React.FC<TripFormProps> = ({
     />,
   ]);
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
-    onSuccess: ({ url }) => {
-      if (url) {
-        window.location.href = url;
-      }
+    onSuccess: ({ url, trip }) => {
+      console.log(trip);
+      // if (url) {
+      //   window.location.href = url;
+      // }
     },
   });
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
-    console.log(directionsResponse);
     try {
       if (!directionsResponse) {
         const directionService = new google.maps.DirectionsService();
