@@ -1,27 +1,21 @@
 import { db } from "@/db";
-import { NextApiRequest } from "next";
 import { headers } from "next/headers";
-import { buffer } from "stream/consumers";
 import Stripe from "stripe";
-import { tripInfoInput } from "@/types";
 import { Status } from "@prisma/client";
-
+import { stripe } from "@/config/stripe";
 export async function POST(request: Request) {
   const body = await request.text();
-
   const signature = headers().get("Stripe-Signature") ?? "";
   let event: Stripe.Event;
   try {
-    event = Stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET || "",
+      process.env.STRIPE_WEBHOOK_SECRET || "",
     );
-  } catch (error) {
+  } catch (err) {
     return new Response(
-      `Webhook Error: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
+      `Webhook Error Test: ${err instanceof Error ? err.message : "Unknown Error"}`,
       { status: 400 },
     );
   }
@@ -50,7 +44,10 @@ export async function POST(request: Request) {
             scheduleTime: trip.scheduleTime,
           },
         });
-        return new Response(JSON.stringify(createdTrip), { status: 200 });
+        console.log(createdTrip);
+        return new Response(JSON.stringify(createdTrip.id), {
+          status: 200,
+        });
       } catch (error) {
         return new Response("Webhook error", { status: 400 });
       }
