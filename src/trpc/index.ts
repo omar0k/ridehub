@@ -2,7 +2,7 @@
 import { db } from "@/db";
 import { privateProcedure, publicProcedure, router } from "./trpc";
 import { tripInfoInput } from "@/types";
-import type { Vehicle } from "@prisma/client";
+import type { Trip } from "@prisma/client";
 import { stripe } from "@/config/stripe";
 import { absoluteUrl } from "@/lib/utils";
 import { z } from "zod";
@@ -35,21 +35,37 @@ export const appRouter = router({
             scheduleTime: input.scheduleTime,
           },
         });
-        return trip;
+        return { trip };
       } catch (error) {
         console.error("Error creating trip:", error);
-
         throw error;
       }
     }),
   getTrips: privateProcedure.query(async () => {}),
+  getTrip: publicProcedure.input(z.string()).query(async (opts) => {
+    const trip = db.trip.findFirst({
+      where: {
+        id: opts.input,
+      },
+    });
+    return trip;
+  }),
+
   createStripeSession: publicProcedure
-    .input(tripInfoInput)
+    .input(
+      z.object({
+        price: z.number(),
+        tripId: z.string(),
+      }),
+    )
     .mutation(async (opts) => {
-      const billingUrl = absoluteUrl("/dashboard/billing");
+      const billingUrl = absoluteUrl(
+        `/dashboard/payment-successful/${opts.input.tripId}?sessionId={CHECKOUT_SESSION_ID}`,
+      );
+
       const stripeSession = await stripe.checkout.sessions.create({
-        success_url: "https://car-service-blush.vercel.app/dashboard/billing",
-        cancel_url: "https://car-service-blush.vercel.app/dashboard/billing",
+        success_url: billingUrl,
+        cancel_url: billingUrl,
         payment_method_types: ["card"],
         mode: "payment",
         billing_address_collection: "auto",
@@ -66,10 +82,15 @@ export const appRouter = router({
           },
         ],
         metadata: {
-          ...opts.input,
+          tripId: opts.input.tripId,
         },
       });
-      return { url: stripeSession.url, price: opts.input.price };
+
+      return {
+        url: stripeSession.url,
+        trip: stripeSession.metadata,
+        stripeSessionId: stripeSession.id,
+      };
     }),
 });
 
