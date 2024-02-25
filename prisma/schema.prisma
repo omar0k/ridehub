@@ -31,7 +31,7 @@ model Vehicle {
 }
 
 model Trip {
-  id           Int      @id @unique @default(autoincrement())
+  id           String   @id @unique @default(uuid())
   origin       String
   destination  String
   status       Status?
@@ -55,4 +55,5 @@ enum Status {
   IN_PROGRESS
   CANCELLED
   BOOKED
+  PENDING
 }
