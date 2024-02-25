@@ -20,37 +20,20 @@ export async function POST(request: Request) {
     );
   }
   const session = event.data.object as Stripe.Checkout.Session;
-  const trip = session.metadata;
+  const metadata = session.metadata;
   if (
     event.type === "checkout.session.completed" ||
     event.type === "invoice.payment_succeeded"
   ) {
-    if (trip) {
-      try {
-        const createdTrip = await db.trip.create({
-          data: {
-            origin: trip.origin,
-            destination: trip.destination,
-            duration: parseInt(trip.duration),
-            distance: parseInt(trip.distance),
-            price: parseFloat(trip.price),
-            vehicle: {
-              connect: {
-                id: parseInt(trip.vehicleId),
-              },
-            },
-            status: Status.BOOKED,
-            scheduleDate: trip.scheduleDate,
-            scheduleTime: trip.scheduleTime,
-          },
-        });
-        console.log(createdTrip);
-        return new Response(JSON.stringify(createdTrip.id), {
-          status: 200,
-        });
-      } catch (error) {
-        return new Response("Webhook error", { status: 400 });
-      }
+    if (metadata) {
+      db.trip.update({
+        where: {
+          id: metadata.tripId,
+        },
+        data: {
+          status: Status.BOOKED,
+        },
+      });
     }
   }
   return new Response(null, { status: 200 });

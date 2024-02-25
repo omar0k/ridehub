@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { useState } from "react";
-import { Status } from "@prisma/client";
+import { Status, Trip } from "@prisma/client";
 import { trpc } from "@/app/_trpc/client";
 import { useToast } from "../ui/use-toast";
 import { useMultistepForm } from "@/app/hooks/useMutlistepForm";
@@ -106,13 +106,14 @@ const TripForm: React.FC<TripFormProps> = ({
     />,
   ]);
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
-    onSuccess: ({ url}) => {
-      // console.log(trip);
+    onSuccess: ({ url, trip }) => {
       if (url) {
         window.location.href = url;
       }
     },
   });
+  const { mutateAsync } = trpc.createTrip.useMutation();
+
   const { toast } = useToast();
   const handleSubmit = async (fields: z.infer<typeof formSchema>) => {
     try {
@@ -135,16 +136,23 @@ const TripForm: React.FC<TripFormProps> = ({
           parseFloat(distance?.replace(/[^\d.]/g, "")),
           parseInt(duration?.replace(/[^\d.]/g, "")),
         );
-        createStripeSession({
+        const createdTripResponse = await mutateAsync({
           origin: fields.origin,
           destination: fields.destination,
-          status: Status.BOOKED,
+          status: Status.PENDING,
           distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
           duration: parseInt(duration?.replace(/[^\d.]/g, "")),
           price: price,
           scheduleDate: fields.tripDate,
           scheduleTime: fields.tripTime,
           vehicleId: fields.vehicleId,
+        });
+
+        const tripId = createdTripResponse;
+
+        createStripeSession({
+          price: price,
+          tripId: createdTripResponse.trip.id,
         });
         return toast({
           title: "Trip booked successfully",
