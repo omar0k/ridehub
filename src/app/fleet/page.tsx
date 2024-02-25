@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
 import { trpc } from "../_trpc/client";
 import { Vehicle } from "@prisma/client";
 import Skeleton from "react-loading-skeleton";
 
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
 import VehicleList from "@/components/VehicleList";
+import React from "react";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
 const Page = () => {
   const { data, isLoading } = trpc.getVehicles.useQuery();
