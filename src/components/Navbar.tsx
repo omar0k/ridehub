@@ -1,25 +1,25 @@
 "use client";
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import {
   ClerkLoaded,
   SignInButton,
   SignOutButton,
   SignUpButton,
   SignedIn,
-  SignedOut,
-  UserButton,
-  UserProfile,
-  useUser,
+  SignedOut, useUser
 } from "@clerk/nextjs";
-import { ArrowRight } from "lucide-react";
 import MobileNav from "./MobileNav";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Icons } from "./Icons";
+import { useRouter } from "next/navigation";
+
 const Navbar = () => {
   const { user } = useUser();
+  const router = useRouter();
+
   return (
     <nav className="sticky inset-x-0 top-0 z-30 mb-10 h-14 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
       <MaxWidthWrapper>
@@ -47,7 +47,11 @@ const Navbar = () => {
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <SignOutButton>
+                  <SignOutButton
+                    signOutCallback={() => {
+                      router.push("/");
+                    }}
+                  >
                     <button className={buttonVariants({ variant: "ghost" })}>
                       Sign Out
                     </button>
