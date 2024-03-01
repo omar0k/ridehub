@@ -2,13 +2,20 @@
 import { trpc } from "@/app/_trpc/client";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { stripe } from "@/config/stripe";
 import { CheckCircle } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 
 const Page = ({ params }: { params: { tripId: string } }) => {
   const { tripId } = params;
-  const { data: trip } = trpc.getTrip.useQuery(tripId);
+  const { data: trip, isLoading } = trpc.getTrip.useQuery(tripId);
   // const session = await stripe.checkout.sessions.retrieve(params);
+  if (isLoading) {
+    return (
+      <MaxWidthWrapper>
+        <Skeleton height={100} count={3} />
+      </MaxWidthWrapper>
+    );
+  }
   if (!tripId || !trip) {
     return (
       <MaxWidthWrapper className="flex items-center justify-center">
@@ -19,6 +26,10 @@ const Page = ({ params }: { params: { tripId: string } }) => {
       </MaxWidthWrapper>
     );
   }
+  const formatDate = (date: string) => {
+    const formattedDate = new Date(date);
+    return `${formattedDate.getMonth() + 1}/${formattedDate.getDate()}/${formattedDate.getFullYear()}`;
+  };
   return (
     <MaxWidthWrapper className="flex items-center justify-center">
       {trip ? (
@@ -28,13 +39,13 @@ const Page = ({ params }: { params: { tripId: string } }) => {
             <p className="ml-2 text-xl text-green-800">Payment Complete</p>
           </CardHeader>
           <CardContent className="flex flex-col text-lg">
-            <div className="mt-4  flex justify-between ">
+            <div className="mt-4 flex justify-between gap-5 ">
               <p className="font-semibold opacity-70">Origin:</p>
               <p>{trip.origin}</p>
             </div>
-            <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex justify-between gap-5">
               <p className="font-semibold opacity-70">Destination:</p>
-              <p>{trip.destination}</p>
+              <p className="">{trip.destination}</p>
             </div>
             <div className="mt-4 flex justify-between">
               <p className="font-semibold opacity-70">Distance:</p>
@@ -46,7 +57,7 @@ const Page = ({ params }: { params: { tripId: string } }) => {
             </div>
             <div className="mt-4  flex justify-between">
               <p className="font-semibold opacity-70">Schedule Date:</p>
-              <p>{trip.scheduleDate}</p>
+              <p>{formatDate(trip.scheduleDate ? trip.scheduleDate : "")}</p>
             </div>
             <div className="mt-4 flex justify-between">
               <p className="font-semibold opacity-70">Schedule Time:</p>
