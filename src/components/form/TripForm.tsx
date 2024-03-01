@@ -168,6 +168,7 @@ const TripForm: React.FC<TripFormProps> = ({
       });
     }
   };
+  console.log("test")
 
   return (
     <Form {...form}>
