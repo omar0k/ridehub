@@ -20,6 +20,11 @@ export const appRouter = router({
       try {
         const trip = await db.trip.create({
           data: {
+            passenger: {
+              connect: {
+                id: input.userId,
+              },
+            },
             destination: input.destination,
             origin: input.origin,
             status: input.status,
@@ -29,9 +34,10 @@ export const appRouter = router({
             duration: input.duration,
             vehicle: {
               connect: {
-                id: 1,
+                id: input.vehicleId,
               },
             },
+
             scheduleTime: input.scheduleTime,
           },
         });
@@ -62,11 +68,11 @@ export const appRouter = router({
       const billingUrl = absoluteUrl(
         `/dashboard/payment-successful/${opts.input.tripId}?sessionId={CHECKOUT_SESSION_ID}`,
       );
-      const cancelUrl=absoluteUrl('/')
+      const cancelUrl = absoluteUrl("/");
 
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: billingUrl,
-        cancel_url:cancelUrl ,
+        cancel_url: cancelUrl,
         payment_method_types: ["card"],
         mode: "payment",
         billing_address_collection: "auto",

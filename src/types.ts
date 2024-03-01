@@ -1,11 +1,8 @@
 import { z } from "zod";
-import type { User } from "@prisma/client";
 import { Status } from "@prisma/client";
-import type { Trip } from "@prisma/client";
-import type { Vehicle } from "@prisma/client";
-import { UseFormReturn } from "react-hook-form";
 
 export const tripInfoInput = z.object({
+  userId: z.string().optional(),
   origin: z.string({ required_error: "Enter origin location" }).min(1),
   destination: z
     .string({ required_error: "Enter destination location" })
@@ -39,6 +36,3 @@ export interface FormInfoData {
   tripTime: string;
   vehicleId: number;
 }
-
-
- 
