@@ -1,3 +1,4 @@
+"use client";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +35,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { useUser } from "@clerk/nextjs";
 
 export const formSchema = z.object({
   origin: z
@@ -67,7 +69,7 @@ const TripForm: React.FC<TripFormProps> = ({
   const [distance, setDistance] = useState<string>();
   const [duration, setDuration] = useState<string>();
   const [directionsError, setDirectionsError] = useState<boolean>(false);
-
+  const { user, isSignedIn } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues:
@@ -146,17 +148,14 @@ const TripForm: React.FC<TripFormProps> = ({
           scheduleDate: fields.tripDate,
           scheduleTime: fields.tripTime,
           vehicleId: fields.vehicleId,
+          ...(isSignedIn && { userId: user.id }),
         });
-
-        const tripId = createdTripResponse;
-
         createStripeSession({
           price: price,
           tripId: createdTripResponse.trip.id,
         });
         return toast({
-          title: "Trip booked successfully",
-          description: "Redirecting to payment...",
+          title: "Redirecting to payment...",
         });
       }
     } catch (error) {
@@ -168,7 +167,6 @@ const TripForm: React.FC<TripFormProps> = ({
       });
     }
   };
-  console.log("test")
 
   return (
     <Form {...form}>
