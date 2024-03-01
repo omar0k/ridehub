@@ -62,10 +62,11 @@ export const appRouter = router({
       const billingUrl = absoluteUrl(
         `/dashboard/payment-successful/${opts.input.tripId}?sessionId={CHECKOUT_SESSION_ID}`,
       );
+      const cancelUrl=absoluteUrl('/')
 
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: billingUrl,
-        cancel_url: billingUrl,
+        cancel_url:cancelUrl ,
         payment_method_types: ["card"],
         mode: "payment",
         billing_address_collection: "auto",
