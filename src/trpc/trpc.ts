@@ -1,18 +1,17 @@
-import { useUser } from "@clerk/nextjs";
+import { auth, useUser } from "@clerk/nextjs";
 import { TRPCError, initTRPC } from "@trpc/server/unstable-core-do-not-import";
 
 const t = initTRPC.create();
 const middlware = t.middleware;
 
 const isAuth = middlware(async (opts) => {
-  const { user } = useUser();
-  if (!user || !user.id) {
+  const { userId } = auth();
+  if (!userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return opts.next({
     ctx: {
-      userId: user.id,
-      user,
+      userId: userId,
     },
   });
 });

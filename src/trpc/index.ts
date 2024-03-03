@@ -47,7 +47,14 @@ export const appRouter = router({
         throw error;
       }
     }),
-  getTrips: privateProcedure.query(async () => {}),
+  getTripsByUserId: privateProcedure.query(async (opts) => {
+    const { userId } = opts.ctx;
+    return await db.trip.findMany({
+      where: {
+        userId,
+      },
+    });
+  }),
   getTrip: publicProcedure.input(z.string()).query(async (opts) => {
     const trip = db.trip.findFirst({
       where: {
