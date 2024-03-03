@@ -4,5 +4,6 @@ export default authMiddleware({
   publicRoutes: ["/api/webhooks(.*)"],
 });
 export const config = {
-  matcher: ["/dashboard(.*)"],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+
 };
