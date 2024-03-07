@@ -1,5 +1,6 @@
 "use client";
-import UserTrips from "@/components/UserTrips";
+import SidebarNav from "@/components/SidebarNav";
+import UserTrips from "@/app/dashboard/UserTrips";
 // @TODO:
 /*
 1.show all user trips inside of dashboard DONE
@@ -9,7 +10,7 @@ import UserTrips from "@/components/UserTrips";
 */
 export default function Dashboard() {
   return (
-    <div>
+    <div className="">
       {/* <LeftSideMenu */}
       {/* 
         Saved preferences 
