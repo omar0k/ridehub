@@ -2,6 +2,7 @@
 import { trpc } from "@/app/_trpc/client";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { format } from "date-fns";
 import { CheckCircle } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -39,32 +40,32 @@ const Page = ({ params }: { params: { tripId: string } }) => {
             <p className="ml-2 text-xl text-green-800">Payment Complete</p>
           </CardHeader>
           <CardContent className="flex flex-col text-lg">
-            <div className="mt-4 flex justify-between gap-5 ">
-              <p className="font-semibold opacity-70">Origin:</p>
+            <div className="mt-4 flex justify-between ">
+              <p className="font-semibold opacity-50">Pick Up:</p>
               <p>{trip.origin}</p>
             </div>
-            <div className="mt-4 flex justify-between gap-5">
-              <p className="font-semibold opacity-70">Destination:</p>
+            <div className="mt-4 flex justify-between ">
+              <p className="font-semibold opacity-50">Drop Off:</p>
               <p className="">{trip.destination}</p>
             </div>
             <div className="mt-4 flex justify-between">
-              <p className="font-semibold opacity-70">Distance:</p>
+              <p className="font-semibold opacity-50">Distance:</p>
               <p>{trip.distance} mi.</p>
             </div>
             <div className="mt-4  flex justify-between">
-              <p className="font-semibold opacity-70">Duration:</p>
+              <p className="font-semibold opacity-50">Duration:</p>
               <p>{trip.duration} min.</p>
             </div>
             <div className="mt-4  flex justify-between">
-              <p className="font-semibold opacity-70">Schedule Date:</p>
+              <p className="font-semibold opacity-50">Schedule Date:</p>
               <p>{formatDate(trip.scheduleDate ? trip.scheduleDate : "")}</p>
             </div>
             <div className="mt-4 flex justify-between">
-              <p className="font-semibold opacity-70">Schedule Time:</p>
-              <p>{trip.scheduleTime}</p>
+              <p className="font-semibold opacity-50">Schedule Time:</p>
+              <p>{format(`2000-01-01T${trip.scheduleTime}`, "h:mm a")}</p>
             </div>
             <div className="mt-4 flex justify-between">
-              <p className="font-semibold opacity-70">Price:</p>
+              <p className="font-semibold opacity-50">Price:</p>
               <p>${trip.price}</p>
             </div>
           </CardContent>

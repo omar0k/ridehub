@@ -75,7 +75,7 @@ export const appRouter = router({
     )
     .mutation(async (opts) => {
       const billingUrl = absoluteUrl(
-        `/dashboard/payment-successful/${opts.input.tripId}?sessionId={CHECKOUT_SESSION_ID}`,
+        `/payment-successful/${opts.input.tripId}?sessionId={CHECKOUT_SESSION_ID}`,
       );
       const cancelUrl = absoluteUrl("/");
 
