@@ -19,22 +19,14 @@ interface DatePickerProps {
 }
 export function DatePicker({ date, setDate }: DatePickerProps) {
   const currentDate = new Date();
-  const disabledDays = Array.from(
-    { length: currentDate.getDate() },
-    (_, index) => {
-      const disabledDate = new Date(currentDate);
-      disabledDate.setDate(index + 1); // Days are 1-indexed
-
-      return { from: disabledDate, to: disabledDate };
-    },
-  );
+  const disabledDays = [{ before: currentDate }];
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "justify-start text-left font-normal",
+            "justify-start w-full text-left font-normal",
             !date && "text-muted-foreground",
           )}
         >

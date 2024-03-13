@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormInfoData } from "@/types";
+import { DatePicker } from "../ui/datepicker";
 interface TripDetailsFormProps {
   form: UseFormReturn<FormInfoData>;
   setDirectionsError: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,10 +24,6 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   directionsError,
   name,
 }) => {
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() - 1);
-  const currentDateString = currentDate.toISOString().split("T")[0];
-
   return (
     <div className="flex  flex-col gap-2 px-1 ">
       <FormField
@@ -98,7 +95,12 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
             <FormItem>
               <FormLabel>Date</FormLabel>
               <FormControl>
-                <Input {...field} type="date" min={currentDateString} />
+                {/* <Input {...field} type="date" min={currentDateString} /> */}
+                <DatePicker
+                  {...field}
+                  date={new Date(field.value)}
+                  setDate={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -113,7 +115,7 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
             <FormItem>
               <FormLabel>Time</FormLabel>
               <FormControl>
-                <Input size={30} {...field} type="time" />
+                <Input {...field} type="time" />
               </FormControl>
               <FormMessage />
             </FormItem>
