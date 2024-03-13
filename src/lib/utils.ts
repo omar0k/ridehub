@@ -17,7 +17,7 @@ export function calculatePrice(distance: number, duration: number) {
 export const TestTripValues = {
   origin: "200 West Street, New York, NY 10282",
   destination: "95-25 Queens Blvd, Rego Park, NY 11374",
-  tripDate: new Date().toISOString().split("T")[0],
-  tripTime: "12:00",
+  tripDate: new Date(),
+  tripTime: "22:00",
   vehicleId: 1,
 };

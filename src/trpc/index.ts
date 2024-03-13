@@ -52,6 +52,8 @@ export const appRouter = router({
     return await db.trip.findMany({
       where: {
         userId,
+        // Uncomment on production to only retunr booked trips to frontend
+        // status:"BOOKED"
       },
     });
   }),
