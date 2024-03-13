@@ -32,7 +32,7 @@ export const vehicleSchema = z.object({
 export interface FormInfoData {
   origin: string;
   destination: string;
-  tripDate: string;
+  tripDate: Date;
   tripTime: string;
   vehicleId: number;
 }

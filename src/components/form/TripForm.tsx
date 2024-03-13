@@ -44,13 +44,7 @@ export const formSchema = z.object({
   destination: z
     .string()
     .min(1, { message: "Please enter a valid drop off location" }),
-  tripDate: z.string().refine(
-    (value) => {
-      const isValidDate = isValid(new Date(value));
-      return isValidDate;
-    },
-    { message: "Please enter a valid date" },
-  ),
+  tripDate: z.date(),
   tripTime: z.string().min(1, { message: "Please enter a trip time" }),
   vehicleId: z.number().min(1, { message: "Please select a vehicle" }),
 });
@@ -78,7 +72,7 @@ const TripForm: React.FC<TripFormProps> = ({
         : {
             origin: "",
             destination: "",
-            tripDate: "",
+            tripDate: new Date(),
             tripTime: "",
             vehicleId: vehicleId ? vehicleId : 1,
           },
@@ -145,11 +139,12 @@ const TripForm: React.FC<TripFormProps> = ({
           distance: parseFloat(distance?.replace(/[^\d.]/g, "")),
           duration: parseInt(duration?.replace(/[^\d.]/g, "")),
           price: price,
-          scheduleDate: fields.tripDate,
+          scheduleDate: fields.tripDate.toString(),
           scheduleTime: fields.tripTime,
           vehicleId: fields.vehicleId,
           ...(isSignedIn && { userId: user.id }),
         });
+        console.log(user?.id,"tripform")
         createStripeSession({
           price: price,
           tripId: createdTripResponse.trip.id,
@@ -159,6 +154,7 @@ const TripForm: React.FC<TripFormProps> = ({
         });
       }
     } catch (error) {
+      console.log(error);
       setDirectionsError(true);
       return toast({
         title: "Address not found",
@@ -217,7 +213,18 @@ const TripForm: React.FC<TripFormProps> = ({
                             <div className="flex-col">
                               <div className="flex items-center gap-1">
                                 <CalendarDays width={20} />
-                                {form.getValues().tripDate},{" "}
+                                {(() => {
+                                  const tripDate = form.getValues().tripDate;
+                                  const formattedDate = new Date(tripDate)
+                                    .toLocaleDateString("en-US", {
+                                      month: "2-digit",
+                                      day: "2-digit",
+                                      year: "numeric",
+                                    })
+                                    .replace(/\//g, "-");
+                                  return formattedDate;
+                                })()}
+                                ,{" "}
                                 {format(
                                   new Date(
                                     `2000-01-01T${form.getValues().tripTime}`,
