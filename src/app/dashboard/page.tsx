@@ -11,10 +11,6 @@ import UserTrips from "@/app/dashboard/UserTrips";
 export default function Dashboard() {
   return (
     <div className="">
-      {/* <LeftSideMenu */}
-      {/* 
-        Saved preferences 
-      */}
       <UserTrips />
     </div>
   );
