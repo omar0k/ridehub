@@ -14,6 +14,18 @@ export const appRouter = router({
     const vehicles = await db.vehicle.findMany();
     return vehicles;
   }),
+  getUser: privateProcedure.query(async (opts) => {
+    try {
+      return await db.user.findFirst({
+        where: {
+          id: opts.ctx.userId,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }),
   createTrip: publicProcedure
     .input(tripInfoInput)
     .mutation(async ({ ctx, input }) => {
