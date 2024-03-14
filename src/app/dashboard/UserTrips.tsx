@@ -30,11 +30,12 @@ const UserTrips = () => {
   if (isLoading) {
     return (
       <div className="rounded-lg px-10">
-        <Skeleton className="rounded-lg" count={3} height={100} />;
+        <Skeleton className="rounded-lg" count={3} height={100} />
       </div>
     );
   }
   return (
+    
     <div className="mx-10  basis-4/5 border-gray-300">
       <CardHeader className="flex flex-row items-center justify-between px-40">
         <p className="flex-grow text-center text-2xl font-semibold">Trips</p>
