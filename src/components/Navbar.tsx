@@ -26,7 +26,7 @@ const Navbar = () => {
         <ClerkLoaded>
           <div className="flex h-14 items-center justify-between border-b border-zinc-200">
             <Link href="/" className="z-40 flex font-semibold">
-              <span>CAR service</span>
+              <span>RideHub</span>
             </Link>
             <MobileNav />
             <div className="hidden items-center sm:flex">
