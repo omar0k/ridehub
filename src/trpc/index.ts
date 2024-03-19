@@ -30,35 +30,38 @@ export const appRouter = router({
     .input(tripInfoInput)
     .mutation(async ({ ctx, input }) => {
       try {
-        const trip = await db.trip.create({
-          data: {
-            passenger: {
-              connect: {
-                id: input.userId,
-              },
+        const tripData: any = {
+          destination: input.destination,
+          origin: input.origin,
+          status: input.status,
+          scheduleDate: input.scheduleDate,
+          price: input.price,
+          distance: input.distance,
+          duration: input.duration,
+          vehicle: {
+            connect: {
+              id: input.vehicleId,
             },
-            destination: input.destination,
-            origin: input.origin,
-            status: input.status,
-            scheduleDate: input.scheduleDate,
-            price: input.price,
-            distance: input.distance,
-            duration: input.duration,
-            vehicle: {
-              connect: {
-                id: input.vehicleId,
-              },
-            },
-
-            scheduleTime: input.scheduleTime,
           },
-        });
+          scheduleTime: input.scheduleTime,
+        };
+
+        if (input.userId) {
+          tripData.passenger = {
+            connect: {
+              id: input.userId,
+            },
+          };
+        }
+
+        const trip = await db.trip.create({ data: tripData });
         return { trip };
       } catch (error) {
         console.error("Error creating trip:", error);
         throw error;
       }
     }),
+
   getTripsByUserId: privateProcedure.query(async (opts) => {
     const { userId } = opts.ctx;
     return await db.trip.findMany({

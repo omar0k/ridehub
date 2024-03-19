@@ -44,8 +44,8 @@ model Trip {
   duration     Int?
   createdAt    DateTime @default(now())
   vehicle      Vehicle  @relation(fields: [vehicleId], references: [id])
-  passenger    User     @relation(fields: [userId], references: [id])
-  userId       String
+  passenger    User?    @relation(fields: [userId], references: [id])
+  userId       String?
   vehicleId    Int
 
   @@index([userId], name: "idx_userId")
