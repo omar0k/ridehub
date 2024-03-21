@@ -268,6 +268,7 @@ const TripForm: React.FC<TripFormProps> = ({
               ) : (
                 "Next"
               )}
+              
             </Button>
           </CardFooter>
         </Card>

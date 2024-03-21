@@ -8,7 +8,8 @@ import {
   SignOutButton,
   SignUpButton,
   SignedIn,
-  SignedOut, useUser
+  SignedOut,
+  useUser,
 } from "@clerk/nextjs";
 import MobileNav from "./MobileNav";
 import Image from "next/image";
@@ -40,7 +41,7 @@ const Navbar = () => {
                   Fleet
                 </Link>
                 <SignedOut>
-                  <SignInButton>
+                  <SignInButton mode="modal">
                     <button className={buttonVariants({ variant: "ghost" })}>
                       Sign In
                     </button>
