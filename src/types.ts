@@ -36,3 +36,7 @@ export interface FormInfoData {
   tripTime: string;
   vehicleId: number;
 }
+export interface DefaultLocationsFormData {
+  origin: string;
+  destination: string;
+}
