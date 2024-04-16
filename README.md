@@ -1,36 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## [RideHub](https://ridehub-omar0k.vercel.app/)
+## About
+A web app built with NextJS that allows uers to book trips and select a car from a fleet of vehicles. Users can also create accounts/login to access extra features such as trip history, saving default locations, saving payment information and more.
+![image](https://github.com/omar0k/ridehub/assets/44348679/95190dec-ca07-4a79-b57b-f0009b16e793)
 
-## Getting Started
 
-First, run the development server:
+## Google Maps Integration
+Accurate addresses and real time traffic and distance mapping using Google Maps API
+ ![image](https://github.com/omar0k/ridehub/assets/44348679/1a27d47d-989c-4316-a517-166e38f7bc57)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## User dashboard
+![image](https://github.com/omar0k/ridehub/assets/44348679/a12af549-0227-4b4c-acdd-d413ea0f93b2)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
