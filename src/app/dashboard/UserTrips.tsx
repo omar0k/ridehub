@@ -1,22 +1,19 @@
 "use client";
-import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import {
   Table,
   TableBody,
-  TableCaption,
+  
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { tripInfoInput } from "@/types";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {CardContent, CardHeader } from "@/components/ui/card";
 import { trpc } from "@/app/_trpc/client";
 import Link from "next/link";
 import { buttonVariants } from "../../components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {  ArrowRight } from "lucide-react";
 import clsx from "clsx";
 // @TODO:
 /*
