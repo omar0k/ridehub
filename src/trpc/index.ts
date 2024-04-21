@@ -5,7 +5,7 @@ import { tripInfoInput } from "@/types";
 import type { Trip } from "@prisma/client";
 import { stripe } from "@/config/stripe";
 import { absoluteUrl } from "@/lib/utils";
-import { z } from "zod";
+import { string, z } from "zod";
 export const appRouter = router({
   test: publicProcedure.query(() => {
     return "hello trpc";
@@ -26,6 +26,29 @@ export const appRouter = router({
       throw error;
     }
   }),
+  updateUserDefaultLocations: privateProcedure
+    .input(
+      z.object({ pickUpLocation: z.string(), dropOffLocation: z.string() }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId) {
+        try {
+          const updatedUser = await db.user.update({
+            where: {
+              id: ctx.userId,
+            },
+            data: {
+              savedPickUpLocation: input.pickUpLocation,
+              savedDropOffLocation: input.dropOffLocation,
+            },
+          });
+          return updatedUser;
+        } catch (error) {
+          console.error("Error updating user: ", error);
+          throw error;
+        }
+      }
+    }),
   createTrip: publicProcedure
     .input(tripInfoInput)
     .mutation(async ({ ctx, input }) => {
