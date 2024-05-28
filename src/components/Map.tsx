@@ -14,6 +14,7 @@ type Location = {
   lat: number;
   lng: number;
 };
+
 const Map = ({ vehicleId }: { vehicleId?: number }) => {
   const apiKey: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
   const { isMobile } = useIsMobile();
