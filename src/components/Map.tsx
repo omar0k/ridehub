@@ -37,7 +37,7 @@ const Map = ({ vehicleId }: { vehicleId?: number }) => {
   });
 
   return isLoaded ? (
-    <div className="flex bg-pink-400 flex-col-reverse items-center justify-center gap-5 md:justify-between md:gap-0 lg:flex-row">
+    <div className="flex bg-yellow-400 flex-col-reverse items-center justify-center gap-5 md:justify-between md:gap-0 lg:flex-row">
       <TripForm
         vehicleId={vehicleId}
         setDirectionsResponse={setDirectionsResponse}
