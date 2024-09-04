@@ -104,7 +104,7 @@ const TripForm: React.FC<TripFormProps> = ({
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url, trip }) => {
       if (url) {
-        window.location.href = url;
+        window.open(url,"_blank")
       }
     },
   });
