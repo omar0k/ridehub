@@ -118,7 +118,7 @@ export const appRouter = router({
       const cancelUrl = absoluteUrl("/");
 
       const stripeSession = await stripe.checkout.sessions.create({
-        success_url: billingUrl,
+        success_url: "https://bmoslimo.com",
         cancel_url: cancelUrl,
         payment_method_types: ["card"],
         mode: "payment",
