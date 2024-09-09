@@ -10,8 +10,15 @@ export function absoluteUrl(path: string) {
     return `https://car-service-blush.vercel.app${path}`;
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
-export function calculatePrice(distance: number, duration: number) {
-  return distance * duration;
+export function calculatePrice(
+  distance: number,
+  duration: number,
+  costPerMile: number,
+  costPerMinute: number,
+  baseFare: number,
+) {
+  const price = baseFare + distance * costPerMile + duration * costPerMinute;
+  return price;
 }
 
 export const TestTripValues = {

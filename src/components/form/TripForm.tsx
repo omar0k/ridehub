@@ -104,7 +104,7 @@ const TripForm: React.FC<TripFormProps> = ({
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url, trip }) => {
       if (url) {
-        window.open(url,"_blank")
+        window.open(url, "_blank");
       }
     },
   });
@@ -131,6 +131,9 @@ const TripForm: React.FC<TripFormProps> = ({
         const price = calculatePrice(
           parseFloat(distance?.replace(/[^\d.]/g, "")),
           parseInt(duration?.replace(/[^\d.]/g, "")),
+          4,
+          1,
+          10,
         );
         const createdTripResponse = await mutateAsync({
           origin: fields.origin,
@@ -144,7 +147,7 @@ const TripForm: React.FC<TripFormProps> = ({
           vehicleId: fields.vehicleId,
           ...(isSignedIn && { userId: user.id }),
         });
-        console.log(user?.id,"tripform")
+        console.log(user?.id, "tripform");
         createStripeSession({
           price: price,
           tripId: createdTripResponse.trip.id,
@@ -268,7 +271,6 @@ const TripForm: React.FC<TripFormProps> = ({
               ) : (
                 "Next"
               )}
-              
             </Button>
           </CardFooter>
         </Card>
