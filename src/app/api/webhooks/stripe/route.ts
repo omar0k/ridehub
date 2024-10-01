@@ -1,11 +1,17 @@
 import { db } from "@/db";
-import { headers } from "next/headers";
 import Stripe from "stripe";
 import { Status } from "@prisma/client";
 import { stripe } from "@/config/stripe";
+
+export const config = {
+  api: {
+    bodyParser: false, 
+  },
+};
+
 export async function POST(request: Request) {
   const body = await request.text();
-  const signature = headers().get("Stripe-Signature") ?? "";
+  const signature = request.headers.get("Stripe-Signature") ?? "";  
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(
