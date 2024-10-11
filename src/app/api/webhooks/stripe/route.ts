@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       });
       await db.trip.update({
         where: {
-          id: "52bc93b5-6a44-4108-839a-7ab1f5f8b2f1",
+          id: metadata.tripId,
         },
         data: {
           status: Status.BOOKED,
