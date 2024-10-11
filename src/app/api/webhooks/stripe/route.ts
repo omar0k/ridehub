@@ -2,39 +2,46 @@ import { db } from "@/db";
 import Stripe from "stripe";
 import { Status } from "@prisma/client";
 import { stripe } from "@/config/stripe";
-
-export const config = {
-  api: {
-    bodyParser: false, 
-  },
-};
+import { sendMail } from "@/lib/sendMail";
 
 export async function POST(request: Request) {
+  // Stripe requires the raw body for webhook verification
   const body = await request.text();
-  const signature = request.headers.get("Stripe-Signature") ?? "";  
+  const signature = request.headers.get("Stripe-Signature") ?? "";
   let event: Stripe.Event;
+
   try {
+    // Construct the event using the raw body and Stripe webhook secret
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET || "",
+      process.env.STRIPE_WEBHOOK_SECRET || "",
     );
   } catch (err) {
+    console.log(err);
     return new Response(
-      `Webhook Error Test: ${err instanceof Error ? err.message : "Unknown Error"}`,
+      `Webhook Error: ${err instanceof Error ? err.message : "Unknown Error"}`,
       { status: 400 },
     );
   }
+
   const session = event.data.object as Stripe.Checkout.Session;
   const metadata = session.metadata;
+
   if (
     event.type === "checkout.session.completed" ||
     event.type === "invoice.payment_succeeded"
   ) {
     if (metadata) {
-      db.trip.update({
+      // Update trip status to "BOOKED" in the database
+      sendMail({
+        subject: "test",
+        text: "testing text",
+        sendTo: process.env.EMAIL_SEND!,
+      });
+      await db.trip.update({
         where: {
-          id: metadata.tripId,
+          id: "52bc93b5-6a44-4108-839a-7ab1f5f8b2f1",
         },
         data: {
           status: Status.BOOKED,
@@ -42,5 +49,7 @@ export async function POST(request: Request) {
       });
     }
   }
+
+  // Return a success response to Stripe
   return new Response(null, { status: 200 });
 }

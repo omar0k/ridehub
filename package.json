@@ -37,7 +37,9 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "lucide-react": "^0.316.0",
+    "micro": "^10.0.1",
     "next": "14.2.7",
+    "nodemailer": "^6.9.15",
     "prisma": "^5.8.1",
     "react": "^18",
     "react-aria": "^3.31.1",
@@ -56,6 +58,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.16",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
